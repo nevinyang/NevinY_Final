@@ -1,68 +1,138 @@
-# An example web information service
+# Application Flow Attributes #
 
-This is an example application intended to be used as a starting point for the final project in [INLS 490-186 Web Information Organization](http://aeshin.org/teaching/inls-490-186/2012/sp/).
+## ID attribute values ##
+### This design relies on four unique identifiers for representations: ###
+**finals**  
+    Applied to a DIV tag. The data of a Finals series in this representation.  
+**game**  
+	Applied to a DIV tag. The data of a Finals game in this representation.  
+**listfinals**  
+	Applied to a DIV tag. The list of NBA Finals series in this representation. This list may contain 0 or more Finals series.  
+**listgames**  
+	Applied to a DIV tag. The list of all Finals games in this representation. This list may contain 0 or more Finals games.  
 
-## Forking this repository
+## Class attribute values ##
+### Clients should be prepared to recognize the following class values: ###
+**finals-new**  
+	Applied to a FORM tag. A link template to create a new NBA Finals series. INPUT[hidden].name="_method" element is used to dynamically treat the form as a PUT request when Finals year exists.  The element must be set to FORM.method="post" and should contain the descendant elements:  
+		INPUT[hidden].name="_method"  
+		INPUT[text].name="id"  
+		INPUT[text].name="team1_gamesWon"  
+		INPUT[text].name="team2_gamesWon"  
+		TEXTAREA.name="recap"  
+		INPUT[text].name="team1_id"  
+		INPUT[text].name="team1_name"  
+		TEXTAREA.name="team1_description"  
+		INPUT[text].name="team2_id"  
+		INPUT[text].name="team2_name"  
+		TEXTAREA.name="team2_description"  
+**game-new**  
+	Applied to a FORM tag. A link template to create a new game. The element must be set to FORM.method="post" and should contain the descendant elements:  
+		INPUT[hidden].name="finals"  
+		INPUT[hidden].name="team1_id"  
+		INPUT[hidden].name="team2_id"  
+		INPUT[text].name="gameid"  
+		INPUT[text].name="team1Score"  
+		INPUT[text].name="team2Score"  
+		TEXTAREA="recap"  
+**game-update**  
+	Applied to a FORM tag. A link template to update a game. The element must be set to FORM.method="post" and should contain the descendant elements:   
+		INPUT[hidden].name="gameid"  
+		INPUT[hidden].name="finals"  
+		INPUT[hidden].name="team1_id"  
+		INPUT[hidden].name="team2_id"  
+		INPUT[text].name="team1Score"  
+		INPUT[text].name="team2Score"  
+		TEXTAREA="recap"  
+**games-search**  
+	Applied to a FORM tag. A link template used to search all games. The element must be set to FORM.method="get" and should contain the descendant element:  
+		INPUT[text].name="gameid"  
 
-You will want to start by [forking](http://help.github.com/fork-a-repo/) this repository so you have your own copy to modify. If you decide to work in a group, I will put a copy of the code in your shared repository. (While it's possible to collaborate with your group by pushing and pulling commits across your two or three separate forks, doing so requires somewhat advanced knowledge of Git and thus isn't expected for this assignment.)
+## Name attribute values ##
+### Name attributes identify a representation element that will be used to supply data to the server during a state transition. Clients should be prepared to supply values for the following state transition elements: ###
+**_method**  
+	Applied to an INPUT[hidden] element. Used to dynamically change a form method to PUT.  
+**id**  
+	Applied to an INPUT[text] element. Uniquely identifies a finals.  
+**team1_gamesWon**  
+	Applied to an INPUT[text] element. The number of games won by the winning team, team 1.  
+**team2_gamesWon**  
+	Applied to an INPUT[text] element. The number of games won by the losing team, team 2.  
+**team1_id**  
+	Applied to an INPUT[text] or INPUT[hidden] element. Uniquely identifies team 1.  INPUT[hidden] is used to pass the element from a Finals item to a game item.  
+**team1_name**  
+	Applied to an INPUT[text] element. The name of team 1.  
+**team1_description**  
+	Applied to a TEXTAREA element. Brief description of team 2, such as players or key information.  
+**team2_id**  
+	Applied to an INPUT[text] or INPUT[hidden] element. Uniquely identifies team 2. INPUT[hidden] is used to pass the element from a Finals item to a game item.  
+**team2_name**  
+	Applied to an INPUT[text] element. The name of team 2.  
+**team2_description**  
+	Applied to a TEXTAREA element. Brief description of team 2, such as players or key information.  
+**finals**  
+	Applied to an INPUT[hidden] element. The element is used to link a games item to a finals item.  
+**recap**  
+	Applied to a TEXTAREA element. Provides a brief synopsis of the event (for either a game or a finals).  
+**gameid**  
+	Applied to an INPUT[text] element. Uniquely identifies a game.  
+**team1Score**  
+	Applied to an INPUT[text] element. The score of team 1 in a single game.  
+**team2Score**  
+	Applied to an INPUT[text] element. The score of team 2 in a single game.  
 
-If you're working alone, please **rename your GitHub repository** to something more suitable for your service. You can do this by clicking on the ![admin](/sils-webinfo/election/raw/master/doc/img/admin.png) button from your repository's page on GitHub. A one-word, no-spaces name is best. (If you're working in a group the repository will be named after your group).
-
-## Cloning your project in Cloud9
-
-If you're working alone, and you've successfully forked the repository to your own GitHub account, then cloning your project into Cloud9 is simple. Just sign in to [Cloud9](http://c9.io) using your GitHub account (click the little green [Octocat](http://octodex.github.com/) icon). Your dashboard should open, and you will see a list of `PROJECTS ON GITHUB` on the left. Select your project and click the green `CLONE TO EDIT` button.
-
-If you're in a group, your GitHub repository won't show up in the list of GitHub projects, so you need to click the plus-sign button next to `MY PROJECTS` on the left, and select `Clone From URL`. Then (in another browser tab) go to the homepage of your team's repository, and copy the URL next to where it says `Read+Write access` (it should look something like `git@github.com:sils-webinfo/SteampunkUnicorn.git` if `SteampunkUnicorn` were the name of your group). Go back to Cloud9, paste this URL in the `Source URL` field, and click the green `CHECKOUT` button. Cloud9 should start cloning your project. (Sometimes it flakes out; if it does just try again.)
-
-## Modifying the example code
-
-There are only three places where the example service needs to be modified to implement your own service:
-
-1. [`app.js`](https://github.com/sils-webinfo/election/blob/master/app.js) contains all the logic for handling HTTP requests. You may just need to modify the examples in this file, or you may need to add additional request handlers by copying, pasting, and modifying these examples. The only parts you should *need* to change are marked with with `TODO` comments. In particular, make sure you edit the value of the `USER_OR_GROUP_NAME` variable at the top of this file to match your GitHub user name (if you're working alone) or your group name:
-
-    ```javascript
-    var USER_OR_GROUP_NAME = ''; // TODO: Insert GitHub username or group name.
-    ```
-
-1. The [`views`](https://github.com/sils-webinfo/election/tree/master/views) directory contains all the EJS ([Embedded JavaScript](http://embeddedjs.com/)) templates for the service. You will need to create new templates suitable for your application, using these examples as models. The templates should include the metadata describing your application flow and data.
-
-1. Finally, you need to edit [`package.json`](https://github.com/sils-webinfo/election/blob/master/package.json) and change the value of the `name` property to whatever you named your project.
-
-## Testing your code
-
-To run your project, simply open `app.js` and click the `debug` button at the top of the screen (it looks like a green play button). You should see a message like this in the console:
+## Rel attribute values ##
+### This design identifies a number of possible simple state transitions (static links) that may appear within representations. These will appear as HTML anchor tags with the following rel attribute values: ###
+**home**  
+	Applied to an A tag. A reference to the starting URI for the application.  
+**finals**  
+	Applied to an A tag. A reference to a Finals representation.  
+**finals-new**  
+	Applied to an A tag. A reference to the finals-new FORM.  
+**game-new**  
+	Applied to an A tag. A reference to the game-new FORM.  
+**game-update**  
+	Applied to an A tag. A reference to the game-update FORM.  
+**game**  
+	Applied to an A tag. A reference to a Finals game representation.  
+**games-search**  
+	Applied to an A tag. A reference to the games-search FORM.  
+**listfinals**  
+	Applied to an A tag. A reference to a list representation of all Finals in the database.  
+**listgames**  
+	Applied to an A tag. A reference to a list representation of all Finals games in the database.  
+	
+# Data Types and Properties #
+	
+## Extended schema fields ##
+### This design extends the SportsTeam (http://schema.org/SportsTeam) and SportsEvent (http://schema.org/SportsEvent) items to SportsTeam/Basketball, SportsEvent/BasketballGame and SportsEvent/NBAFinal for marking up content.  As these item types are extended, only properties not already listed on the parent item type will be described.  These extended types will contain the following additional itemprop values: ###
 
 ```
-Tip: you can access long running processes, like a server, at 'http://election.rybesh.c9.io'.
-Important: in your scripts, use 'process.env.PORT' as port and '0.0.0.0' as host.
-debugger listening on port 54263
+Thing > Event > SportsEvent/NBAFinal' (http://schema.org/SportsEvent)
 ```
+**winningTeam**  
+	Basketball team that won this NBA Finals  
+**losingTeam**  
+	Basketball team that lost this NBA Finals  
+**winnerScore**  
+	Number of games the winning basketball team won.  
+**loserScore**  
+	Number of games the losing basketball team won.  
 
-Clicking on the URL (in my case, `http://election.rybesh.c9.io` since `rybesh` is my GitHub/Cloud9 username) should open a new browser tab or window to your web app.
-
-If you get an error message, it's probably because you forgot to set `USER_OR_GROUP_NAME` (see above) or due to a syntax error somewhere in `app.js` (look for red `X`s along the left margin of the editor when you open `app.js`). 
-
-## Troubleshooting
-
-Running your app in Cloud9 and looking at the console output should help you troubleshoot basic problems. You can add logging messages to `app.js` like this:
-
-```javascript
-console.log("Calculating grobble vectors…");
 ```
-
-Then you when you run your app in Cloud9, you should see the text `Calculating grobble vectors…` in your console when that code is executed. Adding lots of console logging messages like this can help you understand when various parts of the program are running. You can also print out variables to see what their values are:
-
-```javascript
-// Get the item ID from the URI.
-var item_id = req.params.id;
-console.log("the item id is: ", item_id);
+Thing > Event > SportsEvent/BasketballGame (http://schema.org/SportsEvent)
 ```
+**association**  
+	The sports association this team belongs to.  
+**gameNum**  
+	The number of the game in the Finals series.  
+**team1Score**  
+	The score for team 1.  
+**team2Score**  
+	The score for team 2.  
 
-You may also want to verify that data is being created and updated in your database correctly. You can do this by going to [the admin tools for our shared database server](http://sils-webinfo.iriscouch.com/_utils/). Find your database in the list (it is named whatever you set `USER_OR_GROUP_NAME` to in `app.js`), and click it. You should see a list of all the "documents" (objects) in your database. Clicking on a document ID will show its details (properties and values).
-
-## Deploying to Heroku
-
-When you've got your app running how you want it, and you're ready to turn things in, it's time to deploy to [Heroku](http://www.heroku.com/). Heroku is a free (for us) cloud hosting platform. It will enable your app to run longer than it can in the Cloud9 debugger.
-
-First, [sign up](https://api.heroku.com/signup) for Heroku. Then, follow [these instructions](http://support.cloud9ide.com/entries/20710298-deploy-your-application-to-heroku) to deploy your app. Don't worry about the `package.json` and `Procfile` files: those already exist, and you shouldn't have to change them except to change the project name in `package.json` (see above).
-
+```
+Thing > Organization  > SportsTeam/Basketball (http://schema.org/SportsTeam)
+```
+**abbreviation**  
+	The abbreviation of team's official name.  
