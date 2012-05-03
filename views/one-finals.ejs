@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%=item.id%> Finals: <%=item.team1_id%> <%=item.team1_gamesWon%> - <%=item.team2_id%> <%=item.team2_gamesWon%></title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <a href="/" rel="home">Back to NBA Finals Home</a><br />
+    <a href="/finals/" rel="listfinals finals-new">Back to list of all NBA Finals series</a><br />
+    
+    <div id="finals"
+        itemscope itemtype="http://schema.org/SportsEvent/NBAFinal">
+
+    <h1>
+        <time itemprop="startDate" datetime="<%=item.id%>"><%=item._id%></time> 
+        NBA Finals Data 
+    </h1>
+    <dl>
+      <dt>Winning team</dt>
+          <div itemprop="winningTeam" itemscope
+            itemtype="http://schema.org/SportsTeam/Basketball">
+          <dd>
+            <span itemprop="name"><%=item.team1_name%></span>
+            (<span itemprop="abbreviation"><%=item.team1_id%></span>)
+          </dd>
+          </div>
+      <dt>Losing team</dt>
+          <div itemprop="losingTeam" itemscope
+            itemtype="http://schema.org/SportsTeam/Basketball">
+          <dd>
+            <span itemprop="name"><%=item.team2_name%></span>
+            (<span itemprop="abbreviation"><%=item.team2_id%></span>)
+          </dd>
+          </div>
+      <dt>Series score</dt>
+          <dd>
+            <%=item.team1_id%> 
+            <span itemprop="winnerScore"><%=item.team1_gamesWon%></span> - 
+            <%=item.team2_id%> 
+            <span itemprop="loserScore"><%=item.team2_gamesWon%></span>
+          </dd>
+      <dt>Description</dt>
+          <dd>
+            <span itemprop="description">
+            <% if (item.recap) { %><%=item.recap%><% } else { %>
+            No <%=item.id%> Finals recap available at this time.<% } %>
+            </span>
+          </dd>
+      <dt>Games</dt>
+      
+      <dd>
+        <% if (related_items.length > 0) { %>
+        <ul>
+          <% related_items.forEach(function(related_item) { %>
+          <li itemprop="subEvent" itemscope itemtype="http://schema.org/SportsEvent/BasketballGame">
+            <a href="/games/<%=related_item._id%>" rel="game game-update">
+              Game <span itemprop="gameNum"><%=related_item._id.charAt(related_item._id.length-1)%></span>: 
+                <span itemscope itemtype="http://schema.org/SportsTeam/Basketball">
+                    <span itemprop="abbreviation"><%=item.team1_id%></span>
+                </span>
+                <span itemprop="team1Score"><%=related_item.team1Score%></span>
+                 - 
+                <span itemscope itemtype="http://schema.org/SportsTeam/Basketball">
+                    <span itemprop="abbreviation"><%=item.team2_id%></span>
+                </span> 
+                <span itemprop="team2Score"><%=related_item.team2Score%></span>
+            </a>
+          </li>
+          <% }); %>
+        </ul>
+        <% } else { %>
+        No games have been added to this year's finals.
+        <% } %>
+      </dd>
+    </dl>
+    </div>
+
+<!-- Add a new game form -->
+    <div class="control">
+      <h2>Add a new game</h2>
+      <form method="post" action="/games/" class="game-new">
+        <input type="hidden" name="item[finals]" value="<%=item.id%>">
+        <input type="hidden" name="item[team1_id]" value="<%=item.team1_id%>">
+        <input type="hidden" name="item[team2_id]" value="<%=item.team2_id%>">
+        <!-- The line above links the game to be created to this Finals. -->
+        <label>Game ID: 
+          <input name="item[gameid]" type="text" required
+                   placeholder="2011-1">
+        </label>
+        <label><%=item.team1_id%>'s score:
+          <input name="item[team1Score]" type="text" pattern="[0-9]+" required
+                   placeholder="85">
+        </label>
+        <label><%=item.team2_id%>'s score:
+          <input name="item[team2Score]" type="text" pattern="[0-9]+" required
+                   placeholder="77">
+        </label>
+        <label>Recap:
+          <textarea name="item[recap]" cols="80" rows="3" 
+                    placeholder="Insert game recap here"
+          ></textarea>
+        </label>
+        <button>Add</button>
+      </form>
+    </div>
+  </body>
+</html>

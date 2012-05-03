@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>List of All NBA Finals Games</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <a href="/" rel="home">Back to NBA Finals Home</a>
+
+    <h1>List of all NBA Finals games</h1>
+    <div id="listgames">
+    <% if (items.length > 0) { %>
+    <ul>
+      <% items.forEach(function(item) { %>
+      <li itemscope itemtype="http://schema.org/SportsEvent/BasketballGame">
+        <a href="/games/<%=item._id%>" rel="game game-update">
+            <%=item._id.substr(0,item._id.length-2)%> 
+            <span itemprop="association">NBA</span> 
+            Finals, Game 
+            <span itemprop="gameNum"><%=item._id.charAt(item._id.length-1)%></span>: 
+            <span itemscope itemtype="http://schema.org/SportsTeam/Basketball">
+                <span itemprop="abbreviation"><%=item.team1_id%></span>
+            </span> 
+            <span itemprop="team1Score"><%=item.team1Score%></span>
+             - 
+            <span itemscope itemtype="http://schema.org/SportsTeam/Basketball">
+                <span itemprop="abbreviation"><%=item.team2_id%></span>
+            </span> 
+            <span itemprop="team2Score"><%=item.team2Score%></span>
+        </a>
+      </li>
+      <% }); %>
+    </ul>
+    </div>
+<!-- When there are no games in database, display message -->
+    <% } else { %>
+    <div>No games found.</div>
+    <% } %>
+<!-- Form used to search for games -->
+    <div class="control">
+      <h2>Search for games by gameid (year and game number)</h2>
+      <form method="get" action="/games/" class="games-search">      
+        <label>Game ID (Finals year-game number): <input name="gameid" placeholder="2011-1"></label>
+        <button>Search</button>
+      </form>
+    </div>
+  </body>
+</html>

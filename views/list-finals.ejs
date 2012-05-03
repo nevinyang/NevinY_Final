@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>NBA Finals: List of All Finals</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <a href="/" rel="home">Back to NBA Finals Home</a>
+
+    <% if (items.length > 0) { %>
+    <h1>List of all NBA Finals series</h1>      
+    <div id="listfinals">
+    <ul>
+      <% items.forEach(function(item) { %>
+      <li itemscope itemtype="http://schema.org/SportsEvent/NBAFinal">
+        <a href="/finals/<%=item._id%>" rel="finals game-new">
+            <time itemprop="startDate" datetime="<%=item._id%>"><%=item._id%></time> 
+            NBA Finals
+        </a>
+      </li>
+      <% }); %>
+    </ul>
+    </div>
+    <% } else { %>
+    <div>No NBA Finals have been added.</div>
+    <% } %>
+
+<!-- Form to add or update a new NBA Finals series -->
+    <div class="control">
+      <h2>Add or update a new NBA Finals series</h2>
+      <script>
+      function onFormSubmit(form) {
+        form.action = form.action + form.elements['item[id]'].value;
+        console.log(form.action);
+        return true;
+      } 
+      </script>
+      <form method="post" action="/finals/"
+            onsubmit="return onFormSubmit(this);" class="finals-new">
+        <!-- The line above dynamically sets the PUT destination when the -->
+        <!-- form is submitted. -------------------------------------------->
+        <input type="hidden" name="_method" value="put">
+        <!-- The line above tells the server to treat this as a PUT request. -->
+        <label>Finals year<br>
+          (numbers only, no spaces):
+          <input name="item[id]" type="text" pattern="[0-9]+" required
+                 placeholder="2011">
+        </label>        
+        <label>Winning team's games won<br>
+          (one number only):
+          <input name="item[team1_gamesWon]" type="text" pattern="[0-4]" required
+                 placeholder="4">
+        </label>   
+        <label>Losing team's games won<br>
+          (one number only):
+          <input name="item[team2_gamesWon]" type="text" pattern="[0-3]" required
+                 placeholder="2">
+        </label>
+        <label>Finals series recap:
+          <textarea name="item[recap]" cols="80" rows="3"
+                    placeholder="The Lakers drop two games early in series but then come back to win four consecutive to become NBA champions."
+          ></textarea>
+        <!-- WINNING TEAM, TEAM 1, FORM INFO -->
+        <label>Winning team's abbreviation<br>
+          (uppercase letters only, no spaces):
+          <input name="item[team1_id]" type="text" pattern="[A-Z]+" required
+                 placeholder="LAL">
+        </label>
+        <label>Winning team's name: 
+          <input name="item[team1_name]" type="text" required
+                 placeholder="Los Angeles Lakers">
+        </label>
+        <label>Winning team's description:
+          <textarea name="item[team1_description]" cols="80" rows="3" 
+                    placeholder="The Los Angeles Lakers are coached by Mike Brown and feature SG Kobe Bryant along with C Andrew Bynum and PF Pau Gasol."
+          ></textarea>
+        </label>
+        <!-- LOSING TEAM, TEAM 2, FORM INFO -->
+        <label>Losing team's abbreviation<br>
+          (uppercase letters only, no spaces):
+          <input name="item[team2_id]" type="text" pattern="[A-Z]+" required
+                 placeholder="BOS">
+        </label>
+        <label>Losing team's name: 
+          <input name="item[team2_name]" type="text" required
+                 placeholder="Boston Celtics">
+        </label>
+        <label>Losing team's description:
+          <textarea name="item[team2_description]" cols="80" rows="3" 
+                    placeholder="The Boston Celtics are coached by Doc Rivers and feature the 'Big Three' of SF Paul Pierce, PF Kevin Garnett, and SG Ray Allen."
+          ></textarea>
+        </label>
+        <button>Add or update</button>
+      </form>
+    </div>
+  </body>
+</html>

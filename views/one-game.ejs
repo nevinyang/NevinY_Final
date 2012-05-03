@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%=item._id.substr(0, item._id.length-2)%> Finals - Game <%=item._id.charAt(item._id.length-1)%> Data</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <a href="/" rel="home">Back to NBA Finals Home</a><br />  
+    <a href="/finals/<%=item._id.substr(0,item._id.length-2)%>" rel="finals game-new">
+        Go to <%=item._id.substr(0,item._id.length-2)%> Finals
+    </a><br />
+    <a href="/games/" rel="listgames games-search">Go to list of all games</a><br />
+    
+    <div id="game" itemscope itemtype="http://schema.org/SportsEvent/BasketballGame">
+    <h1><%=item._id.substr(0, item._id.length-2)%> 
+        <span itemprop="association">NBA</span> Finals - 
+        Game <span itemprop="gameNum"><%=item._id.charAt(item._id.length-1)%></span> Data
+    </h1>
+    <dl>      
+      <dt><span itemscope itemtype="http://schema.org/SportsTeam/Basketball">
+                <span itemprop="abbreviation"><%=item.team1_id%></span>
+            </span> Score</dt>
+      <dd><span itemprop="team1Score"><%=item.team1Score%></span></dd>
+      <dt><span itemscope itemtype="http://schema.org/SportsTeam/Basketball">
+                <span itemprop="abbreviation"><%=item.team2_id%></span>
+            </span> Score</dt>
+      <dd><span itemprop="team2Score"><%=item.team2Score%></span></dd>   
+      <dt>Recap</dt>
+      <dd>
+        <span itemprop="description=">
+        <%if (item.recap) { %><%=item.recap%><% } else { %>
+        No game recap available at this time.<% } %>
+        </span>
+      </dd>
+      <dt>Link to Finals information</dt>
+      <dd>
+        <a href="/finals/<%=item.finals%>" rel="finals game-new">
+            <span itemscope itemprop="superEvent" itemtype="http://schema.org/SportsEvent/NBAFinal">
+                <time itemprop="startDate" datetime="<%=item.finals%>"><%=item.finals%></time> Finals
+            </span>
+        </a>
+      </dd>
+      <dt>Other games in series</dt>
+      <dd>
+        <% if (related_items.length > 0) { %>
+        <ul>
+          <% related_items.forEach(function(related_item) { %>
+          <%if (!(item._id===related_item._id)) { %>
+            <li>
+            <a href="/games/<%=related_item._id%>">
+              Game <%=related_item._id.charAt(related_item._id.length-1)%> - <%=related_item.team1_id%> <%=related_item.team1Score%> - <%=related_item.team2_id%> <%=related_item.team2Score%> 
+            </a>
+            </li>
+          <%}%>
+          <% }); %>
+        </ul>
+        <% } else { %>
+        There are no other NBA Finals series.
+        <% } %>
+      </dd>
+    </dl>
+    </div>
+
+    <div class="control">
+      <h2>Update game information</h2>
+      <form method="post" action="/games/<%=item._id%>" class="game-update">
+        <input type="hidden" name="_method" value="put">
+        <!-- The line above tells the server to treat this as a PUT request. -->
+        <input type="hidden" name="item[gameid]" value="<%=item._id%>">        
+        <input type="hidden" name="item[finals]" value="<%=item._id.substr(0, item._id.length-2)%>">
+        <input type="hidden" name="item[team1_id]" value="<%=item.team1_id%>">
+        <input type="hidden" name="item[team2_id]" value="<%=item.team2_id%>">
+        <label><%=item.team1_id%> Score: 
+          <input name="item[team1Score]" value="<%=item.team1Score%>" type="text" pattern="[0-9]+" required>
+        </label>
+        <label><%=item.team2_id%> Score: 
+          <input name="item[team2Score]" value="<%=item.team2Score%>" type="text" pattern="[0-9]+" required>
+        </label>
+        <label>Recap:
+          <textarea name="item[recap]" cols="80" rows="3"><%=item.recap%></textarea>
+        </label>
+
+<!-- Games shouldn't be reassigned to different Finals series
+        <label>Finals: 
+          <select name="item[finals]" required>
+            <% related_items.forEach(function(related_item) { %>
+            <option value="<%=related_item._id%>"
+              <% if (related_item._id === item.finals) { %>selected<% } %> >
+              <%=related_item._id%>
+            </option>
+            <% }); %>
+          </select>
+        </label>
+-->
+
+        <button>Update</button>
+      </form>
+    </div>
+  </body>
+</html>
