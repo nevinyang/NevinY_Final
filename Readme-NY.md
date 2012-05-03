@@ -132,7 +132,7 @@ Thing > Event > SportsEvent/BasketballGame (http://schema.org/SportsEvent)
 	The score for team 2.
 
 ```
-Thing > Organization  > SportsTeam/Basketball (http://schema.org/SportsTeam)
+Thing > Organization  > SportsTeam/Basketball [test](http://schema.org/SportsTeam)
 ```
 **abbreviation**
 	The abbreviation of team's official name.
